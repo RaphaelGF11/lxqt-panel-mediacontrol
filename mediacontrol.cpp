@@ -3,6 +3,7 @@
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QCoreApplication>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDBusPendingCallWatcher>
@@ -13,11 +14,13 @@
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QLineEdit>
+#include <QLocale>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QStyle>
 #include <QTimer>
 #include <QToolButton>
+#include <QTranslator>
 #include <QWheelEvent>
 
 namespace {
@@ -55,8 +58,8 @@ class MediaControl final : public QToolButton, public ILXQtPanelPlugin
     Q_OBJECT
 
 public:
-    explicit MediaControl(const ILXQtPanelPluginStartupInfo &info)
-        : ILXQtPanelPlugin(info), bus(QDBusConnection::sessionBus())
+    MediaControl(const ILXQtPanelPluginStartupInfo &info, Qt::LayoutDirection direction)
+        : ILXQtPanelPlugin(info), bus(QDBusConnection::sessionBus()), dialogDirection(direction)
     {
         setAutoRaise(true);
         settingsChanged();
@@ -112,39 +115,41 @@ public:
     {
         auto *dialog = new QDialog(this);
         dialog->setAttribute(Qt::WA_DeleteOnClose);
-        dialog->setWindowTitle(tr("Contrôles multimédias"));
+        dialog->setLayoutDirection(dialogDirection);
+        dialog->setWindowTitle(tr("Media Controls"));
         auto *form = new QFormLayout(dialog);
-        auto *playIcon = addIconField(form, tr("Icône de lecture"), playIconPath);
-        auto *pauseIcon = addIconField(form, tr("Icône de pause"), pauseIconPath);
-        auto *themeIcons = new QCheckBox(tr("Utiliser les icônes du thème par défaut"), dialog);
+        form->setRowWrapPolicy(QFormLayout::WrapLongRows);
+        auto *playIcon = addIconField(form, tr("Play icon"), playIconPath);
+        auto *pauseIcon = addIconField(form, tr("Pause icon"), pauseIconPath);
+        auto *themeIcons = new QCheckBox(tr("Use theme icons by default"), dialog);
         themeIcons->setChecked(preferThemeIcons);
         form->addRow(themeIcons);
 
         auto *size = new QSpinBox(dialog);
         size->setRange(0, 64);
-        size->setSpecialValueText(tr("Taille du panneau"));
-        size->setSuffix(tr(" px"));
+        size->setSpecialValueText(tr("Panel icon size"));
+        size->setSuffix(QStringLiteral(" px"));
         size->setValue(customIconSize);
-        form->addRow(tr("Taille de l’icône"), size);
+        form->addRow(tr("Icon size"), size);
 
         auto *widgetSize = new QSpinBox(dialog);
         widgetSize->setRange(0, maxWidgetSize);
-        widgetSize->setSpecialValueText(tr("Automatique"));
-        widgetSize->setSuffix(tr(" px"));
+        widgetSize->setSpecialValueText(tr("Automatic"));
+        widgetSize->setSuffix(QStringLiteral(" px"));
         widgetSize->setValue(customWidgetSize);
-        form->addRow(panel()->isHorizontal() ? tr("Largeur du widget") : tr("Hauteur du widget"),
+        form->addRow(panel()->isHorizontal() ? tr("Widget width") : tr("Widget height"),
                      widgetSize);
 
-        auto *click = addActionField(form, tr("Clic gauche"), clickAction);
-        auto *wheelUp = addActionField(form, tr("Molette vers le haut"), wheelUpAction);
-        auto *wheelDown = addActionField(form, tr("Molette vers le bas"), wheelDownAction);
+        auto *click = addActionField(form, tr("Left click"), clickAction);
+        auto *wheelUp = addActionField(form, tr("Scroll up"), wheelUpAction);
+        auto *wheelDown = addActionField(form, tr("Scroll down"), wheelDownAction);
 
         auto *buttons = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel |
                                              QDialogButtonBox::RestoreDefaults, dialog);
-        buttons->button(QDialogButtonBox::Save)->setText(tr("Enregistrer"));
-        buttons->button(QDialogButtonBox::Cancel)->setText(tr("Annuler"));
+        buttons->button(QDialogButtonBox::Save)->setText(tr("Save"));
+        buttons->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
         auto *reset = buttons->button(QDialogButtonBox::RestoreDefaults);
-        reset->setText(tr("Rétablir les valeurs par défaut"));
+        reset->setText(tr("Restore defaults"));
         form->addRow(buttons);
         connect(reset, &QPushButton::clicked, dialog, [=] {
             playIcon->clear();
@@ -224,15 +229,16 @@ private:
         auto *layout = new QHBoxLayout(row);
         layout->setContentsMargins(0, 0, 0, 0);
         auto *field = new QLineEdit(path, row);
-        field->setPlaceholderText(tr("Icône par défaut"));
-        auto *browse = new QPushButton(tr("Parcourir…"), row);
+        field->setPlaceholderText(tr("Default icon"));
+        auto *browse = new QPushButton(tr("Browse…"), row);
         layout->addWidget(field);
         layout->addWidget(browse);
         form->addRow(label, row);
         connect(browse, &QPushButton::clicked, row, [field, row] {
             const auto path = QFileDialog::getOpenFileName(
-                row, tr("Choisir une icône"), field->text(),
-                tr("Images (*.png *.svg *.xpm *.jpg *.webp);;Tous les fichiers (*)"));
+                row, tr("Choose an icon"), field->text(),
+                QStringLiteral("%1 (*.png *.svg *.xpm *.jpg *.webp);;%2 (*)")
+                    .arg(tr("Images"), tr("All files")));
             if (!path.isEmpty())
                 field->setText(path);
         });
@@ -242,11 +248,11 @@ private:
     QComboBox *addActionField(QFormLayout *form, const QString &label, const QString &action)
     {
         auto *field = new QComboBox;
-        field->addItem(tr("Aucune"), QString());
-        field->addItem(tr("Lecture / pause"), toggleAction);
-        field->addItem(tr("Piste suivante"), nextAction);
-        field->addItem(tr("Piste précédente"), previousAction);
-        field->addItem(tr("Arrêter"), stopAction);
+        field->addItem(tr("None"), QString());
+        field->addItem(tr("Play / pause"), toggleAction);
+        field->addItem(tr("Next track"), nextAction);
+        field->addItem(tr("Previous track"), previousAction);
+        field->addItem(tr("Stop"), stopAction);
         field->setCurrentIndex(qMax(0, field->findData(action)));
         form->addRow(label, field);
         return field;
@@ -335,7 +341,7 @@ private:
             chosen = QIcon::fromTheme(icon, style()->standardIcon(fallback));
         }
         setIcon(chosen);
-        setToolTip(selected.service.isEmpty() ? tr("Aucun lecteur multimédia disponible")
+        setToolTip(selected.service.isEmpty() ? tr("No media player available")
                                              : selected.service.mid(playerPrefix.size()));
     }
 
@@ -350,6 +356,7 @@ private:
     }
 
     QDBusConnection bus;
+    const Qt::LayoutDirection dialogDirection;
     QTimer refreshTimer;
     Player selected;
     Player best;
@@ -374,10 +381,22 @@ class MediaControlLibrary final : public QObject, public ILXQtPanelPluginLibrary
     Q_INTERFACES(ILXQtPanelPluginLibrary)
 
 public:
+    MediaControlLibrary()
+    {
+        if (translator.load(QLocale(), QStringLiteral("mediacontrol"), QStringLiteral("_"),
+                            QStringLiteral(":/lxqt-mediacontrol/i18n"))) {
+            QCoreApplication::installTranslator(&translator);
+        }
+    }
+
     ILXQtPanelPlugin *instance(const ILXQtPanelPluginStartupInfo &info) const override
     {
-        return new MediaControl(info);
+        const auto direction = QLocale(translator.language()).textDirection();
+        return new MediaControl(info, direction);
     }
+
+private:
+    QTranslator translator;
 };
 
 #include "mediacontrol.moc"
