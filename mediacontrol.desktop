@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=LXQtPanel/Plugin
+Icon=media-playback-start
+Name=Media Controls
+Name[fr]=Contrôles multimédias
+Comment=Play, pause and skip tracks in MPRIS players
+Comment[fr]=Lancer, mettre en pause et changer de piste dans un lecteur MPRIS
