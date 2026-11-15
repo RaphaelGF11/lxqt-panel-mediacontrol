@@ -41,3 +41,7 @@ nice -n 19 ionice -c 3 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DLXQT_MEDIA_QT_MAJOR=5 -DCMAKE_INSTALL_PREFIX=/usr
 nice -n 19 ionice -c 3 cmake --build build --parallel 1
 ```
+
+## Licence
+
+Le code du widget est distribué sous [licence MIT](LICENSE).
