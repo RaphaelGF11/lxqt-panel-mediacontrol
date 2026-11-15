@@ -1,5 +1,7 @@
 # Contrôles multimédias pour LXQt Panel
 
+**Projet généré avec l’IA (OpenAI Codex).**
+
 Widget natif C++/Qt qui pilote les lecteurs multimédias MPRIS par D-Bus. Un clic gauche lance ou met en pause la lecture. La molette change de piste. Quand plusieurs lecteurs sont ouverts, le widget privilégie celui qui joue.
 
 Le menu **Configurer « Contrôles multimédias »** permet de choisir les icônes, leur taille, la largeur ou la hauteur du widget et l’action de chaque geste.
