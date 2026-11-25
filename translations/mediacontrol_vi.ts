@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Không có trình phát đa phương tiện</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Hiện ảnh bìa album</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Hiện nghệ sĩ và tên bài</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Không giới hạn</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Độ rộng văn bản tối đa</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Đang phát</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Tạm dừng</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Đã dừng</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Ẩn</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Kích thước ảnh bìa trong chú giải</translation>
+        </message>
     </context>
 </TS>

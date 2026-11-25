@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Kullanılabilir medya oynatıcı yok</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Albüm kapağını göster</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Sanatçı ve başlığı göster</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Sınırsız</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Azami metin genişliği</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Çalıyor</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Duraklatıldı</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Durduruldu</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Gizli</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>İpucundaki kapak boyutu</translation>
+        </message>
     </context>
 </TS>

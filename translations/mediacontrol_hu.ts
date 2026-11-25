@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Nem érhető el médialejátszó</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Albumborító megjelenítése</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Előadó és cím megjelenítése</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Korlátlan</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Maximális szövegszélesség</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Lejátszás</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Szüneteltetve</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Leállítva</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Rejtett</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Borító mérete az elemleírásban</translation>
+        </message>
     </context>
 </TS>

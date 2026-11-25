@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Ingen medieafspiller tilgængelig</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Vis albumcover</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Vis kunstner og titel</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Ubegrænset</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Maksimal tekstbredde</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Afspiller</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Sat på pause</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Stoppet</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Skjult</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Coverstørrelse i værktøjstip</translation>
+        </message>
     </context>
 </TS>

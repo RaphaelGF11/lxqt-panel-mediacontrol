@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>ไม่มีโปรแกรมเล่นสื่อที่พร้อมใช้งาน</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>แสดงปกอัลบั้ม</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>แสดงศิลปินและชื่อเพลง</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>ไม่จำกัด</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>ความกว้างข้อความสูงสุด</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>กำลังเล่น</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>หยุดชั่วคราว</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>หยุดแล้ว</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>ซ่อน</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>ขนาดปกในคำแนะนำเครื่องมือ</translation>
+        </message>
     </context>
 </TS>

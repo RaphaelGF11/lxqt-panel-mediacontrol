@@ -1,9 +1,11 @@
 #include <ilxqtpanelplugin.h>
 #include <pluginsettings.h>
 
+#include <QBuffer>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
+#include <QDBusArgument>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDBusPendingCallWatcher>
@@ -13,14 +15,24 @@
 #include <QFileDialog>
 #include <QFormLayout>
 #include <QHBoxLayout>
+#include <QHelpEvent>
+#include <QImage>
+#include <QImageReader>
 #include <QLineEdit>
 #include <QLocale>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QPainter>
+#include <QPainterPath>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QStyle>
 #include <QTimer>
 #include <QToolButton>
+#include <QToolTip>
 #include <QTranslator>
+#include <QUrl>
 #include <QWheelEvent>
 
 namespace {
@@ -44,13 +56,48 @@ const auto toggleAction = QStringLiteral("PlayPause");
 const auto nextAction = QStringLiteral("Next");
 const auto previousAction = QStringLiteral("Previous");
 const auto stopAction = QStringLiteral("Stop");
+const auto showCoverKey = QStringLiteral("showCover");
+const auto showTitleKey = QStringLiteral("showTitle");
+const auto textWidthKey = QStringLiteral("maxTextWidth");
+const auto popupCoverKey = QStringLiteral("tooltipCoverSize");
+const int defaultPopupCover = 128;
+const int maxPopupCover = 512;
+const int popupTextWidth = 320;
+const int defaultTextWidth = 200;
+const int maxTextWidthLimit = 800;
+const qint64 maxCoverBytes = 16 * 1024 * 1024;
 
 struct Player
 {
     QString service;
     QString status;
     int priority = 3;
+    QString title;
+    QString artist;
+    QString album;
+    QString artUrl;
 };
+
+// MPRIS metadata arrives as a{sv} wrapped in a QDBusArgument; its xesam:artist is "as".
+QVariantMap toMap(const QVariant &value)
+{
+    if (value.canConvert<QDBusArgument>())
+        return qdbus_cast<QVariantMap>(value.value<QDBusArgument>());
+    return value.toMap();
+}
+
+QString joinedStrings(const QVariant &value)
+{
+    QStringList list;
+    if (value.canConvert<QDBusArgument>())
+        list = qdbus_cast<QStringList>(value.value<QDBusArgument>());
+    else if (value.userType() == QMetaType::QStringList)
+        list = value.toStringList();
+    else
+        list = QStringList{value.toString()};
+    list.removeAll(QString());
+    return list.join(QStringLiteral(", "));
+}
 }
 
 class MediaControl final : public QToolButton, public ILXQtPanelPlugin
@@ -62,6 +109,7 @@ public:
         : ILXQtPanelPlugin(info), bus(QDBusConnection::sessionBus()), dialogDirection(direction)
     {
         setAutoRaise(true);
+        network.setTransferTimeout(10000);
         settingsChanged();
         refreshTimer.setSingleShot(true);
         refreshTimer.setInterval(50);
@@ -94,6 +142,7 @@ public:
         setMinimumSize(horizontal ? customWidgetSize : 0,
                        horizontal ? 0 : customWidgetSize);
         setIconSize(QSize(visibleIcon, visibleIcon));
+        updateButton();
     }
 
     void settingsChanged() override
@@ -106,6 +155,12 @@ public:
         clickAction = settings()->value(clickKey, toggleAction).toString();
         wheelUpAction = settings()->value(wheelUpKey, nextAction).toString();
         wheelDownAction = settings()->value(wheelDownKey, previousAction).toString();
+        showCover = settings()->value(showCoverKey, true).toBool();
+        showTitle = settings()->value(showTitleKey, true).toBool();
+        maxTextWidth = qBound(0, settings()->value(textWidthKey, defaultTextWidth).toInt(),
+                              maxTextWidthLimit);
+        popupCoverSize = qBound(0, settings()->value(popupCoverKey, defaultPopupCover).toInt(),
+                                maxPopupCover);
         wheelDelta = 0;
         realign();
         updateButton();
@@ -140,6 +195,27 @@ public:
         form->addRow(panel()->isHorizontal() ? tr("Widget width") : tr("Widget height"),
                      widgetSize);
 
+        auto *cover = new QCheckBox(tr("Show album cover"), dialog);
+        cover->setChecked(showCover);
+        form->addRow(cover);
+        auto *title = new QCheckBox(tr("Show artist and title"), dialog);
+        title->setChecked(showTitle);
+        form->addRow(title);
+        auto *textWidth = new QSpinBox(dialog);
+        textWidth->setRange(0, maxTextWidthLimit);
+        textWidth->setSpecialValueText(tr("Unlimited"));
+        textWidth->setSuffix(QStringLiteral(" px"));
+        textWidth->setValue(maxTextWidth);
+        textWidth->setEnabled(showTitle);
+        form->addRow(tr("Maximum text width"), textWidth);
+        connect(title, &QCheckBox::toggled, textWidth, &QWidget::setEnabled);
+        auto *popupCover = new QSpinBox(dialog);
+        popupCover->setRange(0, maxPopupCover);
+        popupCover->setSpecialValueText(tr("Hidden"));
+        popupCover->setSuffix(QStringLiteral(" px"));
+        popupCover->setValue(popupCoverSize);
+        form->addRow(tr("Tooltip cover size"), popupCover);
+
         auto *click = addActionField(form, tr("Left click"), clickAction);
         auto *wheelUp = addActionField(form, tr("Scroll up"), wheelUpAction);
         auto *wheelDown = addActionField(form, tr("Scroll down"), wheelDownAction);
@@ -157,6 +233,10 @@ public:
             themeIcons->setChecked(false);
             size->setValue(0);
             widgetSize->setValue(0);
+            cover->setChecked(true);
+            title->setChecked(true);
+            textWidth->setValue(defaultTextWidth);
+            popupCover->setValue(defaultPopupCover);
             click->setCurrentIndex(click->findData(toggleAction));
             wheelUp->setCurrentIndex(wheelUp->findData(nextAction));
             wheelDown->setCurrentIndex(wheelDown->findData(previousAction));
@@ -167,6 +247,10 @@ public:
             settings()->setValue(themeIconsKey, themeIcons->isChecked());
             settings()->setValue(iconSizeKey, size->value());
             settings()->setValue(widgetSizeKey, widgetSize->value());
+            settings()->setValue(showCoverKey, cover->isChecked());
+            settings()->setValue(showTitleKey, title->isChecked());
+            settings()->setValue(textWidthKey, textWidth->value());
+            settings()->setValue(popupCoverKey, popupCover->value());
             settings()->setValue(clickKey, click->currentData());
             settings()->setValue(wheelUpKey, wheelUp->currentData());
             settings()->setValue(wheelDownKey, wheelDown->currentData());
@@ -179,6 +263,69 @@ public:
     }
 
 protected:
+    bool event(QEvent *event) override
+    {
+        // Qt sends ToolTip after the usual hover delay: show the cover popup instead of the plain
+        // tooltip while a player is selected.
+        if (event->type() == QEvent::ToolTip && !selected.service.isEmpty()) {
+            showPopup(static_cast<QHelpEvent *>(event)->globalPos());
+            return true;
+        }
+        return QToolButton::event(event);
+    }
+
+    void leaveEvent(QEvent *event) override
+    {
+        hidePopup();
+        QToolButton::leaveEvent(event);
+    }
+
+    // The left click is handled here instead of by QToolButton, so the button never becomes
+    // "down": panel themes style pressed buttons (the LXQt "kvantum" theme moves them 3 px with
+    // "QToolButton:pressed { margin: ... }"), which made the icon jump on every play/pause.
+    void mousePressEvent(QMouseEvent *event) override
+    {
+        hidePopup();
+        if (event->button() != Qt::LeftButton) {
+            QToolButton::mousePressEvent(event);
+            return;
+        }
+        leftPressed = true;
+        event->accept();
+    }
+
+    void mouseReleaseEvent(QMouseEvent *event) override
+    {
+        if (event->button() != Qt::LeftButton || !leftPressed) {
+            QToolButton::mouseReleaseEvent(event);
+            return;
+        }
+        leftPressed = false;
+        event->accept();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        const QPoint position = event->position().toPoint();
+#else
+        const QPoint position = event->pos();
+#endif
+        if (rect().contains(position))
+            send(clickAction);
+    }
+
+    void mouseMoveEvent(QMouseEvent *event) override
+    {
+        if (leftPressed) {
+            event->accept();
+            return;
+        }
+        QToolButton::mouseMoveEvent(event);
+    }
+
+    void hideEvent(QHideEvent *event) override
+    {
+        hidePopup();
+        QToolButton::hideEvent(event);
+    }
+
     void wheelEvent(QWheelEvent *event) override
     {
         if (event->angleDelta().y() == 0 || selected.service.isEmpty()) {
@@ -213,12 +360,14 @@ private slots:
     void propertiesChanged(const QString &interface, const QVariantMap &changed,
                            const QStringList &invalidated)
     {
-        const auto status = QStringLiteral("PlaybackStatus");
-        const auto control = QStringLiteral("CanControl");
-        if (interface == playerInterface &&
-            (changed.contains(status) || changed.contains(control) ||
-             invalidated.contains(status) || invalidated.contains(control))) {
-            refreshTimer.start();
+        if (interface != playerInterface)
+            return;
+        for (const auto &key : {QStringLiteral("PlaybackStatus"), QStringLiteral("CanControl"),
+                                QStringLiteral("Metadata")}) {
+            if (changed.contains(key) || invalidated.contains(key)) {
+                refreshTimer.start();
+                return;
+            }
         }
     }
 
@@ -303,7 +452,14 @@ private:
                     const int priority = order.indexOf(status);
                     if (priority >= 0 && (priority < best.priority ||
                         (priority == best.priority && name < best.service))) {
-                        best = {name, status, priority};
+                        const auto metadata = toMap(properties.value(QStringLiteral("Metadata")));
+                        best = {name,
+                                status,
+                                priority,
+                                metadata.value(QStringLiteral("xesam:title")).toString(),
+                                joinedStrings(metadata.value(QStringLiteral("xesam:artist"))),
+                                metadata.value(QStringLiteral("xesam:album")).toString(),
+                                metadata.value(QStringLiteral("mpris:artUrl")).toString()};
                     }
                 }
             }
@@ -317,6 +473,7 @@ private:
         if (selected.service != best.service)
             wheelDelta = 0;
         selected = best;
+        loadCover(selected.artUrl);
         updateButton();
         refreshing = false;
         if (refreshPending) {
@@ -325,9 +482,8 @@ private:
         }
     }
 
-    void updateButton()
+    QIcon stateIcon(bool playing) const
     {
-        const bool playing = selected.status == QStringLiteral("Playing");
         const auto icon = playing ? QStringLiteral("media-playback-pause")
                                   : QStringLiteral("media-playback-start");
         const auto &customPath = playing ? pauseIconPath : playIconPath;
@@ -340,9 +496,193 @@ private:
             const auto fallback = playing ? QStyle::SP_MediaPause : QStyle::SP_MediaPlay;
             chosen = QIcon::fromTheme(icon, style()->standardIcon(fallback));
         }
-        setIcon(chosen);
-        setToolTip(selected.service.isEmpty() ? tr("No media player available")
-                                             : selected.service.mid(playerPrefix.size()));
+        return chosen;
+    }
+
+    /// The cover, cropped square, with the playback state as a badge in the corner (drawn in
+    /// white, so it shows whatever the icon theme); dimmed while not playing.
+    QIcon coverIcon(bool playing) const
+    {
+        const int side = qMax(16, iconSize().width());
+        const qreal dpr = devicePixelRatioF();
+        QPixmap pixmap(QSize(side, side) * dpr);
+        pixmap.setDevicePixelRatio(dpr);
+        pixmap.fill(Qt::transparent);
+        QPainter painter(&pixmap);
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        QPainterPath clip;
+        clip.addRoundedRect(QRectF(0, 0, side, side), side / 8.0, side / 8.0);
+        painter.setClipPath(clip);
+        const QImage scaled = coverImage.scaled(QSize(side, side) * dpr,
+                                                Qt::KeepAspectRatioByExpanding,
+                                                Qt::SmoothTransformation);
+        const QRect source((scaled.width() - side * dpr) / 2, (scaled.height() - side * dpr) / 2,
+                           side * dpr, side * dpr);
+        painter.drawImage(QRectF(0, 0, side, side), scaled, source);
+        if (!playing)
+            painter.fillRect(QRectF(0, 0, side, side), QColor(0, 0, 0, 90));
+        painter.setClipping(false);
+
+        const qreal b = side * 0.5;
+        const QRectF badgeRect(side - b, side - b, b, b);
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(QColor(0, 0, 0, 170));
+        painter.drawEllipse(badgeRect);
+        painter.setBrush(Qt::white);
+        const QPointF c = badgeRect.center();
+        const qreal g = b * 0.22;
+        if (playing) {
+            // pause: two bars
+            painter.drawRect(QRectF(c.x() - g, c.y() - g, g * 0.75, 2 * g));
+            painter.drawRect(QRectF(c.x() + g * 0.25, c.y() - g, g * 0.75, 2 * g));
+        } else {
+            // play: triangle
+            const QPointF tri[3] = {{c.x() - g * 0.8, c.y() - g}, {c.x() - g * 0.8, c.y() + g},
+                                    {c.x() + g * 1.1, c.y()}};
+            painter.drawPolygon(tri, 3);
+        }
+        painter.end();
+        return QIcon(pixmap);
+    }
+
+    void updateButton()
+    {
+        const bool playing = selected.status == QStringLiteral("Playing");
+        const bool cover = showCover && !selected.service.isEmpty() && !coverImage.isNull();
+        setIcon(cover ? coverIcon(playing) : stateIcon(playing));
+
+        QString text;
+        if (!selected.service.isEmpty() && !selected.title.isEmpty()) {
+            text = selected.artist.isEmpty()
+                       ? selected.title
+                       : QStringLiteral("%1 – %2").arg(selected.artist, selected.title);
+        }
+        const bool horizontal = panel() == nullptr || panel()->isHorizontal();
+        if (showTitle && horizontal && !text.isEmpty()) {
+            int width = maxTextWidth > 0 ? maxTextWidth : QWIDGETSIZE_MAX;
+            if (customWidgetSize > 0)
+                width = qMin(width, qMax(0, customWidgetSize - iconSize().width() - 12));
+            setText(fontMetrics().elidedText(text, Qt::ElideRight, width));
+            setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        } else {
+            setText(QString());
+            setToolButtonStyle(Qt::ToolButtonIconOnly);
+        }
+
+        if (selected.service.isEmpty()) {
+            setToolTip(tr("No media player available"));
+            hidePopup();
+            return;
+        }
+        setToolTip(QString());
+        if (popupShown && QToolTip::isVisible() && underMouse())
+            showPopup(popupPos);  // content changed while shown
+    }
+
+    QString statusText() const
+    {
+        if (selected.status == QStringLiteral("Playing")) return tr("Playing");
+        if (selected.status == QStringLiteral("Paused")) return tr("Paused");
+        if (selected.status == QStringLiteral("Stopped")) return tr("Stopped");
+        return selected.status;
+    }
+
+    /// The mouse-over tooltip: a real QToolTip, so the widget style (e.g. Kvantum) and the
+    /// panel theme draw it like every other tooltip. The cover is embedded as a data: URL.
+    QString popupHtml() const
+    {
+        const QFontMetrics metrics = fontMetrics();
+        const auto line = [&](const QString &text) {
+            return metrics.elidedText(text, Qt::ElideRight, popupTextWidth).toHtmlEscaped();
+        };
+        QString text;
+        if (!selected.title.isEmpty())
+            text += QStringLiteral("<b style=\"font-size:large\">%1</b><br>").arg(line(selected.title));
+        if (!selected.artist.isEmpty())
+            text += line(selected.artist) + QStringLiteral("<br>");
+        if (!selected.album.isEmpty())
+            text += QStringLiteral("<i>%1</i><br>").arg(line(selected.album));
+        const auto player = selected.service.mid(playerPrefix.size());
+        text += QStringLiteral("<small>%1</small>")
+                    .arg(QStringLiteral("%1 · %2").arg(player, statusText()).toHtmlEscaped());
+
+        if (!showCover || popupCoverSize <= 0 || coverImage.isNull())
+            return QStringLiteral("<qt>%1</qt>").arg(text);
+        const qreal dpr = devicePixelRatioF();
+        const QImage scaled = coverImage.scaled(QSize(popupCoverSize, popupCoverSize) * dpr,
+                                                Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        QByteArray png;
+        QBuffer buffer(&png);
+        buffer.open(QIODevice::WriteOnly);
+        scaled.save(&buffer, "PNG");
+        const QSize logical = (QSizeF(scaled.size()) / dpr).toSize();
+        return QStringLiteral(
+                   "<qt><table cellspacing=\"0\" cellpadding=\"0\"><tr>"
+                   "<td valign=\"top\"><img src=\"data:image/png;base64,%1\" width=\"%2\" height=\"%3\"></td>"
+                   "<td width=\"10\"></td><td valign=\"top\">%4</td></tr></table></qt>")
+            .arg(QString::fromLatin1(png.toBase64()))
+            .arg(logical.width())
+            .arg(logical.height())
+            .arg(text);
+    }
+
+    void showPopup(const QPoint &globalPos)
+    {
+        popupPos = globalPos;
+        popupShown = true;
+        QToolTip::showText(globalPos, popupHtml(), this, rect());
+    }
+
+    void hidePopup()
+    {
+        if (popupShown)
+            QToolTip::hideText();
+        popupShown = false;
+    }
+
+    void loadCover(const QString &url)
+    {
+        if (url == coverUrl)
+            return;
+        coverUrl = url;
+        coverImage = QImage();
+        if (coverReply) {
+            coverReply->abort();
+            coverReply = nullptr;
+        }
+        if (url.isEmpty())
+            return;
+        const QUrl parsed(url);
+        if (parsed.isLocalFile()) {
+            QImageReader reader(parsed.toLocalFile());
+            reader.setAutoTransform(true);
+            coverImage = reader.read();
+            return;
+        }
+        if (parsed.scheme() != QStringLiteral("http") && parsed.scheme() != QStringLiteral("https"))
+            return;
+        QNetworkRequest request(parsed);
+        request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+                             QNetworkRequest::NoLessSafeRedirectPolicy);
+        auto *reply = network.get(request);
+        coverReply = reply;
+        connect(reply, &QNetworkReply::downloadProgress, reply, [reply](qint64 received, qint64) {
+            if (received > maxCoverBytes)
+                reply->abort();
+        });
+        connect(reply, &QNetworkReply::finished, this, [this, reply, url] {
+            reply->deleteLater();
+            if (coverReply == reply)
+                coverReply = nullptr;
+            if (url != coverUrl || reply->error() != QNetworkReply::NoError)
+                return;
+            QImage image;
+            if (image.loadFromData(reply->readAll())) {
+                coverImage = image;
+                updateButton();
+            }
+        });
     }
 
     void send(const QString &command)
@@ -356,8 +696,19 @@ private:
     }
 
     QDBusConnection bus;
+    QNetworkAccessManager network;
+    QNetworkReply *coverReply = nullptr;
+    QString coverUrl;
+    QImage coverImage;
+    bool showCover = true;
+    bool showTitle = true;
+    int maxTextWidth = defaultTextWidth;
+    int popupCoverSize = defaultPopupCover;
+    QPoint popupPos;
+    bool popupShown = false;
     const Qt::LayoutDirection dialogDirection;
     QTimer refreshTimer;
+    bool leftPressed = false;
     Player selected;
     Player best;
     int remaining = 0;

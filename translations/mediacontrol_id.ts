@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Tidak ada pemutar media yang tersedia</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Tampilkan sampul album</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Tampilkan artis dan judul</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Tanpa batas</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Lebar teks maksimum</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Memutar</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Dijeda</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Dihentikan</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Tersembunyi</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Ukuran sampul di tooltip</translation>
+        </message>
     </context>
 </TS>

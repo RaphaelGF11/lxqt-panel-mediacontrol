@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Kein Mediaplayer verfügbar</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Albumcover anzeigen</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Interpret und Titel anzeigen</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Unbegrenzt</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Maximale Textbreite</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Wiedergabe</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Pausiert</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Gestoppt</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Ausgeblendet</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Covergröße im Tooltip</translation>
+        </message>
     </context>
 </TS>

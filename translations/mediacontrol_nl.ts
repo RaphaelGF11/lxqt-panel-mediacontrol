@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Geen mediaspeler beschikbaar</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Albumhoes tonen</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Artiest en titel tonen</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Onbeperkt</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Maximale tekstbreedte</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Speelt af</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Gepauzeerd</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Gestopt</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Verborgen</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Hoesgrootte in tooltip</translation>
+        </message>
     </context>
 </TS>

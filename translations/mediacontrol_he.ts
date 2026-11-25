@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>אין נגן מדיה זמין</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>הצגת עטיפת האלבום</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>הצגת אמן וכותרת</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>ללא הגבלה</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>רוחב טקסט מרבי</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>מתנגן</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>מושהה</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>נעצר</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>מוסתר</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>גודל העטיפה בחלונית העצה</translation>
+        </message>
     </context>
 </TS>

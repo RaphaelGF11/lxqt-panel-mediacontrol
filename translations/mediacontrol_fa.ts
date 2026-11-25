@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>هیچ پخش‌کنندهٔ رسانه‌ای در دسترس نیست</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>نمایش جلد آلبوم</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>نمایش هنرمند و عنوان</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>نامحدود</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>حداکثر عرض متن</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>در حال پخش</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>مکث شده</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>متوقف شده</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>پنهان</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>اندازه جلد در راهنمای ابزار</translation>
+        </message>
     </context>
 </TS>

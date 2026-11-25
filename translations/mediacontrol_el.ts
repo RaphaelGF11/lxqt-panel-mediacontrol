@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Δεν υπάρχει διαθέσιμο πρόγραμμα αναπαραγωγής</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Εμφάνιση εξωφύλλου άλμπουμ</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Εμφάνιση καλλιτέχνη και τίτλου</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Απεριόριστο</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Μέγιστο πλάτος κειμένου</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Αναπαραγωγή</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Σε παύση</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Διακόπηκε</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Κρυφό</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Μέγεθος εξωφύλλου στην αναδυόμενη πληροφορία</translation>
+        </message>
     </context>
 </TS>

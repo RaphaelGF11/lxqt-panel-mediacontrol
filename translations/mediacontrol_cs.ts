@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Není dostupný žádný přehrávač médií</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Zobrazit obal alba</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Zobrazit interpreta a název</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Neomezeno</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Maximální šířka textu</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Přehrává se</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Pozastaveno</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Zastaveno</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Skryto</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Velikost obalu v bublině</translation>
+        </message>
     </context>
 </TS>

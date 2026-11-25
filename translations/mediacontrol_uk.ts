@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Немає доступних медіапрогравачів</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Показувати обкладинку альбому</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Показувати виконавця і назву</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Без обмежень</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Максимальна ширина тексту</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Відтворення</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Призупинено</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Зупинено</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Приховано</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Розмір обкладинки у підказці</translation>
+        </message>
     </context>
 </TS>
