@@ -280,10 +280,44 @@ protected:
         QToolButton::leaveEvent(event);
     }
 
+    // The left click is handled here instead of by QToolButton, so the button never becomes
+    // "down": panel themes style pressed buttons (the LXQt "kvantum" theme moves them 3 px with
+    // "QToolButton:pressed { margin: ... }"), which made the icon jump on every play/pause.
     void mousePressEvent(QMouseEvent *event) override
     {
         hidePopup();
-        QToolButton::mousePressEvent(event);
+        if (event->button() != Qt::LeftButton) {
+            QToolButton::mousePressEvent(event);
+            return;
+        }
+        leftPressed = true;
+        event->accept();
+    }
+
+    void mouseReleaseEvent(QMouseEvent *event) override
+    {
+        if (event->button() != Qt::LeftButton || !leftPressed) {
+            QToolButton::mouseReleaseEvent(event);
+            return;
+        }
+        leftPressed = false;
+        event->accept();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        const QPoint position = event->position().toPoint();
+#else
+        const QPoint position = event->pos();
+#endif
+        if (rect().contains(position))
+            send(clickAction);
+    }
+
+    void mouseMoveEvent(QMouseEvent *event) override
+    {
+        if (leftPressed) {
+            event->accept();
+            return;
+        }
+        QToolButton::mouseMoveEvent(event);
     }
 
     void hideEvent(QHideEvent *event) override
@@ -674,6 +708,7 @@ private:
     bool popupShown = false;
     const Qt::LayoutDirection dialogDirection;
     QTimer refreshTimer;
+    bool leftPressed = false;
     Player selected;
     Player best;
     int remaining = 0;
