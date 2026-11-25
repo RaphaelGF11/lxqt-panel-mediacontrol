@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>利用できるメディアプレーヤーがありません</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>アルバムカバーを表示</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>アーティストとタイトルを表示</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>無制限</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>最大テキスト幅</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>再生中</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>一時停止中</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>停止</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>非表示</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>ツールチップのカバーサイズ</translation>
+        </message>
     </context>
 </TS>

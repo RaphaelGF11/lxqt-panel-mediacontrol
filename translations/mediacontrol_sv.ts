@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Ingen mediespelare tillgänglig</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Visa skivomslag</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Visa artist och titel</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Obegränsad</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Maximal textbredd</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Spelar</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Pausad</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Stoppad</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Dold</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Omslagsstorlek i verktygstips</translation>
+        </message>
     </context>
 </TS>

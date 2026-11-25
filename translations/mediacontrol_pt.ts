@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Não há nenhum leitor multimédia disponível</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Mostrar capa do álbum</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Mostrar artista e título</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Ilimitado</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Largura máxima do texto</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>A reproduzir</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Em pausa</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Parado</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Oculta</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Tamanho da capa na dica</translation>
+        </message>
     </context>
 </TS>

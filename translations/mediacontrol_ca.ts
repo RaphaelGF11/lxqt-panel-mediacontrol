@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>No hi ha cap reproductor multimèdia disponible</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Mostra la portada de l'àlbum</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Mostra l'artista i el títol</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Il·limitat</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Amplada màxima del text</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Reproduint</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>En pausa</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Aturat</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Amagat</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Mida de la portada a l'indicador</translation>
+        </message>
     </context>
 </TS>

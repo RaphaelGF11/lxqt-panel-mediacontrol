@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>কোনো মিডিয়া প্লেয়ার উপলব্ধ নেই</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>অ্যালবাম কভার দেখান</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>শিল্পী ও শিরোনাম দেখান</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>সীমাহীন</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>সর্বোচ্চ লেখার প্রস্থ</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>চলছে</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>বিরতি</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>থামানো</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>লুকানো</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>টুলটিপে কভারের আকার</translation>
+        </message>
     </context>
 </TS>

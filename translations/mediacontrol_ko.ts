@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>사용할 수 있는 미디어 플레이어가 없습니다</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>앨범 커버 표시</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>아티스트와 제목 표시</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>무제한</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>최대 텍스트 너비</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>재생 중</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>일시 정지됨</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>정지됨</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>숨김</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>도구 설명의 커버 크기</translation>
+        </message>
     </context>
 </TS>

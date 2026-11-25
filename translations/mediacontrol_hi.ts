@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>कोई मीडिया प्लेयर उपलब्ध नहीं है</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>एल्बम कवर दिखाएँ</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>कलाकार और शीर्षक दिखाएँ</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>असीमित</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>अधिकतम टेक्स्ट चौड़ाई</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>चल रहा है</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>रुका हुआ</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>बंद</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>छिपा हुआ</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>टूलटिप में कवर का आकार</translation>
+        </message>
     </context>
 </TS>

@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>لا يوجد مشغّل وسائط متاح</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>إظهار غلاف الألبوم</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>إظهار الفنان والعنوان</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>غير محدود</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>أقصى عرض للنص</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>قيد التشغيل</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>متوقف مؤقتًا</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>متوقف</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>مخفي</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>حجم الغلاف في التلميح</translation>
+        </message>
     </context>
 </TS>

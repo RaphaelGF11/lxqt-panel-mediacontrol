@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Niciun player multimedia disponibil</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Afișează coperta albumului</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Afișează artistul și titlul</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Nelimitat</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Lățime maximă a textului</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Se redă</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>În pauză</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Oprit</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Ascunsă</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Dimensiunea copertei în indiciu</translation>
+        </message>
     </context>
 </TS>

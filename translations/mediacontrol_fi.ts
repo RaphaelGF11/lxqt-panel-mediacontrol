@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Mediasoitinta ei ole käytettävissä</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Näytä albumin kansi</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Näytä esittäjä ja nimi</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Rajoittamaton</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Tekstin enimmäisleveys</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Toistetaan</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>Tauolla</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Pysäytetty</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Piilotettu</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Kannen koko työkaluvihjeessä</translation>
+        </message>
     </context>
 </TS>

@@ -36,7 +36,7 @@ After installation, restart LXQt Panel. Use **Configure Panel → Widgets → +*
 
 ## Translations
 
-The project includes 34 complete Qt Linguist catalogs covering all 26 widget strings. English is built into the source as the fallback. The catalogs include Arabic, Bengali, Bulgarian, Catalan, Chinese (Simplified and Traditional), Czech, Danish, Dutch, Finnish, French, German, Greek, Hebrew, Hindi, Hungarian, Indonesian, Italian, Japanese, Korean, Norwegian Bokmål, Persian, Polish, Portuguese (Portugal and Brazil), Romanian, Russian, Slovak, Spanish, Swedish, Thai, Turkish, Ukrainian, and Vietnamese.
+The project includes 34 complete Qt Linguist catalogs covering all 35 widget strings. English is built into the source as the fallback. The catalogs include Arabic, Bengali, Bulgarian, Catalan, Chinese (Simplified and Traditional), Czech, Danish, Dutch, Finnish, French, German, Greek, Hebrew, Hindi, Hungarian, Indonesian, Italian, Japanese, Korean, Norwegian Bokmål, Persian, Polish, Portuguese (Portugal and Brazil), Romanian, Russian, Slovak, Spanish, Swedish, Thai, Turkish, Ukrainian, and Vietnamese.
 
 The `.ts` files in [translations](translations) are editable in Qt Linguist. CMake compiles them with `lrelease` and embeds the resulting catalogs in the module. The localized plugin names and descriptions are stored in [mediacontrol.desktop](mediacontrol.desktop).
 

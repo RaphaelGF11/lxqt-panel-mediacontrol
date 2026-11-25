@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>Няма наличен мултимедиен плейър</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>Показване на обложката</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>Показване на изпълнител и заглавие</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>Без ограничение</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>Максимална ширина на текста</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>Възпроизвежда се</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>На пауза</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>Спряно</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>Скрито</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>Размер на обложката в подсказката</translation>
+        </message>
     </context>
 </TS>

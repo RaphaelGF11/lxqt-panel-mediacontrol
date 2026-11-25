@@ -107,5 +107,41 @@
             <source>No media player available</source>
             <translation>没有可用的媒体播放器</translation>
         </message>
+        <message>
+            <source>Show album cover</source>
+            <translation>显示专辑封面</translation>
+        </message>
+        <message>
+            <source>Show artist and title</source>
+            <translation>显示艺术家和标题</translation>
+        </message>
+        <message>
+            <source>Unlimited</source>
+            <translation>无限制</translation>
+        </message>
+        <message>
+            <source>Maximum text width</source>
+            <translation>最大文本宽度</translation>
+        </message>
+        <message>
+            <source>Playing</source>
+            <translation>正在播放</translation>
+        </message>
+        <message>
+            <source>Paused</source>
+            <translation>已暂停</translation>
+        </message>
+        <message>
+            <source>Stopped</source>
+            <translation>已停止</translation>
+        </message>
+        <message>
+            <source>Hidden</source>
+            <translation>隐藏</translation>
+        </message>
+        <message>
+            <source>Tooltip cover size</source>
+            <translation>提示中的封面大小</translation>
+        </message>
     </context>
 </TS>
