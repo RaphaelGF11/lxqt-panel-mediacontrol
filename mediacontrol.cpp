@@ -29,6 +29,7 @@
 #include <QSpinBox>
 #include <QStyle>
 #include <QTimer>
+#include <QtMath>
 #include <QToolButton>
 #include <QToolTip>
 #include <QTranslator>
@@ -141,8 +142,15 @@ public:
                        horizontal ? QWIDGETSIZE_MAX : length);
         setMinimumSize(horizontal ? customWidgetSize : 0,
                        horizontal ? 0 : customWidgetSize);
-        setIconSize(QSize(visibleIcon, visibleIcon));
-        updateButton();
+        // The panel calls realign() on every LayoutRequest. Only redraw when something that
+        // matters here changed: setIcon() requests a new layout, so an unconditional
+        // updateButton() would loop forever between panel and plugin and keep a core busy.
+        const QSize size(visibleIcon, visibleIcon);
+        const bool changed = size != iconSize() || horizontal != wasHorizontal;
+        wasHorizontal = horizontal;
+        setIconSize(size);
+        if (changed)
+            updateButton();
     }
 
     void settingsChanged() override
@@ -162,6 +170,7 @@ public:
         popupCoverSize = qBound(0, settings()->value(popupCoverKey, defaultPopupCover).toInt(),
                                 maxPopupCover);
         wheelDelta = 0;
+        iconKey.clear();  // icon paths or theme preference may have changed
         realign();
         updateButton();
     }
@@ -550,7 +559,18 @@ private:
     {
         const bool playing = selected.status == QStringLiteral("Playing");
         const bool cover = showCover && !selected.service.isEmpty() && !coverImage.isNull();
-        setIcon(cover ? coverIcon(playing) : stateIcon(playing));
+        // Rebuild the icon only when it would look different: building it is expensive and
+        // setIcon() relayouts the panel.
+        const QString key = QStringLiteral("%1|%2|%3|%4|%5")
+                                .arg(cover ? coverImage.cacheKey() : 0)
+                                .arg(playing)
+                                .arg(iconSize().width())
+                                .arg(devicePixelRatioF())
+                                .arg(cover);
+        if (key != iconKey) {
+            iconKey = key;
+            setIcon(cover ? coverIcon(playing) : stateIcon(playing));
+        }
 
         QString text;
         if (!selected.service.isEmpty() && !selected.title.isEmpty()) {
@@ -657,7 +677,7 @@ private:
         if (parsed.isLocalFile()) {
             QImageReader reader(parsed.toLocalFile());
             reader.setAutoTransform(true);
-            coverImage = reader.read();
+            coverImage = limitedCover(reader.read());
             return;
         }
         if (parsed.scheme() != QStringLiteral("http") && parsed.scheme() != QStringLiteral("https"))
@@ -679,10 +699,20 @@ private:
                 return;
             QImage image;
             if (image.loadFromData(reply->readAll())) {
-                coverImage = image;
+                coverImage = limitedCover(image);
                 updateButton();
             }
         });
+    }
+
+    /// Covers can be several thousand pixels wide; shrink them once on load so that drawing
+    /// the panel icon and the tooltip never scales the full image.
+    QImage limitedCover(const QImage &image) const
+    {
+        const int limit = qCeil(maxPopupCover * devicePixelRatioF());
+        if (image.width() <= limit && image.height() <= limit)
+            return image;
+        return image.scaled(limit, limit, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     }
 
     void send(const QString &command)
@@ -700,6 +730,8 @@ private:
     QNetworkReply *coverReply = nullptr;
     QString coverUrl;
     QImage coverImage;
+    QString iconKey;
+    bool wasHorizontal = true;
     bool showCover = true;
     bool showTitle = true;
     int maxTextWidth = defaultTextWidth;
